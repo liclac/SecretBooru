@@ -24,9 +24,9 @@ class Post(object):
 	
 	basequery = "SELECT ROWID, added, rating, mime, key FROM posts"
 	
-	def __init__(self, id, added_ut, rating, mime, key):
+	def __init__(self, id, added, rating, mime, key):
 		self.id = id
-		self.added = datetime.fromtimestamp(added_ut)
+		self.added = datetime.strptime(added, '%Y-%m-%d %H:%M:%S')
 		self.mime = mime
 		self.rating = rating
 	
@@ -107,21 +107,33 @@ def posts():
 @app.route('/posts/<int:id>/')
 def post(id):
 	post = Post.get(id)
-	if post is None:
+	if not post:
 		abort(404)
 	return render_template('post.html', post=post)
 
 @app.route('/posts/<int:id>/image')
 def image(id):
 	post = Post.get(id)
-	if post is None:
+	if not post:
 		abort(404)
 	
 	with open(path('media/%s' % post.id)) as f:
 		return (f.read(), 200, [('Content-Type', post.mime)])
 
+@app.route('/posts/<int:id>/thumb')
+def thumb(id):
+	post = Post.get(id)
+	if not post:
+		abort(404)
+	
+	with open(path('media/%s_thumb' % post.id)) as f:
+		return (f.read(), 200, [('Content-Type', post.mime)])
+
 @app.route('/posts/import/', methods=['GET', 'POST'])
 def import_():
+	from StringIO import StringIO
+	import Image
+	
 	if request.method == 'POST':
 		remote = urllib2.urlopen(request.form['url'])
 		info = remote.info()
@@ -133,7 +145,15 @@ def import_():
 		id = c.lastrowid
 		
 		with open(path('media/%s' % id), 'wb') as local:
-			local.write(remote.read())
+			data = remote.read()
+			local.write(data)
+			
+			img = Image.open(StringIO(data))
+			img.thumbnail((200, 200), Image.ANTIALIAS)
+			img.save(path('media/%s_thumb' % id), mime.split('/')[-1])
+			
+			del img
+			del data
 		
 		g.db.commit()
 		return redirect(url_for('post', id=id))

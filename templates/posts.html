@@ -3,7 +3,7 @@
 {% block content %}
 {% for post in posts %}
 <a class="thumb" href="{{ url_for('post', id=post.id) }}">
-	<img src="{{ url_for('image', id=post.id) }}" />
+	<img src="{{ url_for('thumb', id=post.id) }}" />
 </a>
 {% endfor %}
 {% endblock %}

@@ -1,9 +1,6 @@
-#login-form {
-	text-align: center;
-}
-
-#sidebar {
-	padding:10px 15px;
+.page-header {
+	border-bottom:none;
+	padding-bottom:none;
 }
 
 .thumb {
@@ -11,4 +8,12 @@
 	width:100px;
 	height:200px;
 	margin-right:10px;
+}
+
+#sidebar {
+	padding:10px 15px;
+}
+
+#login-form {
+	text-align: center;
 }
