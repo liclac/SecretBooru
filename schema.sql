@@ -1,4 +1,5 @@
 CREATE TABLE posts (
 	added INTEGER,
-	rating TEXT
+	rating TEXT,
+	key TEXT
 )
