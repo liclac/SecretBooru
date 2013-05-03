@@ -31,9 +31,30 @@ class Post(object):
 		self.mime = mime
 		self.rating = rating
 	
+	def path(self, thumb=False):
+		suffix = ''
+		return path('media/%s%s' % (self.id, ('_thumb' if thumb else '')))
+	
 	def get_data(self, thumb=False):
-		with open(path('media/%s' % (self.id, '_thumb' if thumb else ''))) as f:
+		with open(self.path(thumb)) as f:
 			return f.read()
+	
+	def set_data(self, data, format, thumb=False, make_thumb=True):
+		with open(self.path(thumb), 'wb') as f:
+			f.write(data)
+		if not thumb and make_thumb:
+			self.make_thumbnail(data, format)
+	
+	def make_thumbnail(self, data, format):
+		from cStringIO import StringIO
+		import Image
+		
+		img = Image.open(StringIO(data))
+		img.thumbnail((200, 200), Image.ANTIALIAS)
+		#img.save(path('media/%s_thumb' % id), format)
+		d = StringIO()
+		img.save(d, format)
+		self.set_data(d.getvalue(), format, thumb=True)
 	
 	@classmethod
 	def get(cls, id):
@@ -120,7 +141,7 @@ def post(id):
 def image(id):
 	post = Post.get(id)
 	if post:
-		return (post.get_data(True), 200, [('Content-Type', post.mime)])
+		return (post.get_data(), 200, [('Content-Type', post.mime)])
 	else:
 		abort(404)
 
@@ -128,7 +149,7 @@ def image(id):
 def thumb(id):
 	post = Post.get(id)
 	if post:
-		return (post.get_data(), 200, [('Content-Type', post.mime)])
+		return (post.get_data(True), 200, [('Content-Type', post.mime)])
 	else:
 		abort(404)
 
@@ -147,20 +168,22 @@ def import_():
 		c.execute("INSERT INTO posts (rating, mime, key) VALUES (?, ?, ?)", ('q', mime, buffer(key)))
 		id = c.lastrowid
 		
-		with open(path('media/%s' % id), 'wb') as local:
-			data = remote.read()
-			local.write(data)
-			
-			img = Image.open(StringIO(data))
-			img.thumbnail((200, 200), Image.ANTIALIAS)
-			img.save(path('media/%s_thumb' % id), mime.split('/')[-1])
-			
-			del img
-			del data
+		post = Post.get(id)
+		post.set_data(remote.read(), mime.split('/')[-1])
+		#with open(path('media/%s' % id), 'wb') as local:
+		#	data = remote.read()
+		#	local.write(data)
+		#	
+		#	img = Image.open(StringIO(data))
+		#	img.thumbnail((200, 200), Image.ANTIALIAS)
+		#	img.save(path('media/%s_thumb' % id), mime.split('/')[-1])
+		#	
+		#	del img
+		#	del data
 		
 		g.db.commit()
 		return redirect(url_for('post', id=id))
-	return render_template('import.html', post=post)
+	return render_template('import.html')
 
 if __name__ == '__main__':
 	app.run()
