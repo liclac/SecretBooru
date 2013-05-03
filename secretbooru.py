@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # encoding: utf-8
 import os, re
+import urllib2
 from datetime import datetime
 from flask import Flask, session, request, g
 from flask import url_for, redirect, abort, render_template, flash
 from pysqlcipher import dbapi2
+from Crypto import Random
 
 app = Flask(__name__)
 app.config.from_object('settings')
@@ -17,7 +19,7 @@ class Post(object):
 	id = 0
 	added = None
 	rating = 'q'
-	mime = 'text/plain' #lolnope
+	mime = 'text/plain'	#lolnope
 	key = None
 	
 	def __init__(self, id, added_ut, rating, mime, key):
@@ -32,7 +34,7 @@ class Post(object):
 		rec = c.execute("SELECT ROWID, added, rating, mime, key FROM posts WHERE ROWID = ?", [id]).fetchone()
 		if rec is None:
 			return None
-		return cls(rec[0], rec[1], rec[2])
+		return cls(*rec)
 
 def db_connect(password):
 	db = dbapi2.connect(path(app.config['DB_NAME']))
@@ -98,6 +100,38 @@ def post(id):
 	if post is None:
 		abort(404)
 	return render_template('post.html', post=post)
+
+@app.route('/posts/<int:id>/image')
+def image(id):
+	post = Post.get(id)
+	if post is None:
+		abort(404)
+	
+	with open(path('media/%s' % post.id)) as f:
+		return (f.read(), 200, [('Content-Type', post.mime)])
+
+@app.route('/posts/import/', methods=['GET', 'POST'])
+def import_():
+	if request.method == 'POST':
+		remote = urllib2.urlopen(request.form['url'])
+		info = remote.info()
+		mime = info['Content-Type']
+		key = Random.new().read(64)
+		
+		c = g.db.cursor()
+		c.execute("INSERT INTO posts (rating, mime, key) VALUES (?, ?, ?)", ('q', mime, buffer(key)))
+		id = c.lastrowid
+		
+		with open(path('media/%s' % id), 'wb') as local:
+			local.write(remote.read())
+		
+		g.db.commit()
+		
+		#return (response.read(), 200, [('Content-Type', info['Content-Type'])])
+		#return response.read()
+		#c = g.db.cursor()
+		#c.execute("INSERT INTO posts (rating, )")
+	return render_template('import.html', post=post)
 
 if __name__ == '__main__':
 	app.run()

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Import Image{% endblock %}
+{% block content %}
+<form action="." method="POST">
+	<div class="input-append">
+		<input type="url" name="url" placeholder="Enter URL" />
+		<input type="submit" class="btn" value="Import" />
+	</div>
+</form>
+{% endblock %}

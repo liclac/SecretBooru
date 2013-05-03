@@ -1,5 +1,5 @@
 CREATE TABLE posts (
-	added INTEGER DEFAULT CURRENT_TIMESTAMP,
+	added INTEGER DEFAULT (strftime('%s', 'now')),
 	rating TEXT,
 	mime TEXT,
 	key BLOB
