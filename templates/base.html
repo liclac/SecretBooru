@@ -36,9 +36,11 @@
 					{% endfor %}
 				{% endif %}
 			{% endwith %}
-			<ul class="span3 nav nav-list">
+			<ul class="span3 nav nav-list well" id="sidebar">
 				{% block sidebar %}
-				<li><a href="#">esrdt</a></li>
+				<li class="nav-header">Header</li>
+				<li><a href="#">Item 1</a></li>
+				<li><a href="#">Item 2</a></li>
 				{% endblock %}
 			</ul>
 			<div class="span9">

@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
 import os, re
+from datetime import datetime
 from flask import Flask, session, request, g
-from flask import url_for, redirect, render_template, flash
+from flask import url_for, redirect, abort, render_template, flash
 from pysqlcipher import dbapi2
 
 app = Flask(__name__)
@@ -11,6 +12,24 @@ app.config.from_object('secrets')
 
 site_root = os.path.abspath(os.path.dirname(__file__))
 path = lambda filename: os.path.join(site_root, filename)
+
+class Post(object):
+	id = 0
+	added = None
+	rating = 'q'
+	
+	def __init__(self, id, added_ut, rating):
+		self.id = id
+		self.added = datetime.fromtimestamp(added_ut)
+		self.rating = rating
+	
+	@classmethod
+	def get(cls, db, id):
+		c = db.cursor()
+		rec = db.execute("SELECT ROWID, added, rating FROM posts WHERE ROWID = ?", [id]).fetchone()
+		if rec is None:
+			return None
+		return cls(rec[0], rec[1], rec[2])
 
 def db_connect(password):
 	db = dbapi2.connect(path(app.config['DB_NAME']))
@@ -67,7 +86,9 @@ def posts():
 
 @app.route('/posts/<int:id>/')
 def post(id):
-	post = None
+	post = Post.get(g.db, id)
+	if post is None:
+		abort(404)
 	return render_template('post.html', post=post)
 
 if __name__ == '__main__':
