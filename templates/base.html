@@ -7,32 +7,46 @@
 {% endmacro %}<!DOCTYPE html>
 <html>
 <head>
-	<title>{% block title %}UNTITLED{% endblock %} | MacaroniCode</title>
+	<title>{% block title %}UNTITLED{% endblock %} | SecretBooru</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet" />
 	<link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet" />
 	{% block css %}<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />{% endblock %}
 </head>
 <body>
-	<div class="container">
+	<div class="container-fluid">
 		<header id="header" class="page-header" role="header">
-			<h1 role="banner">
-				MacaroniCode{# <small>{% block headline %}&nbsp;{% endblock %}</small>#}
-			</h1>
 			<div class="navbar" role="navigation">
 				<div class="navbar-inner">
+					<a class="brand" href="{{ url_for('home') }}">SecretBooru</a>
 					<ul class="nav">
-						{{ nav_li('home', 'Home') }}
-						{#{{ nav_li('blog', 'Blog') }}#}
+						{{ nav_li('posts', 'Posts') }}
 					</ul>
+					<form class="navbar-search pull-right" action="{{ url_for('posts') }}" method="GET">
+						<input type="text" name="q" class="search-query" placeholder="Search">
+					</form>
 				</div>
 			</div>
 		</header>
-		<div id="content" role="main">
-			{% block content %}
-			Oops, looks like I forgot to override this block...<br />
-			If you're not me, please <a href="http://twitter.com/uppfinnarn" target="_blank">tell me</a>!
-			{% endblock %}
+		<div class="row" id="content" role="main">
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					{% for message in messages %}
+						<p class="alert alert-error">{{ message }}</p>
+					{% endfor %}
+				{% endif %}
+			{% endwith %}
+			<ul class="span3 nav nav-list">
+				{% block sidebar %}
+				<li><a href="#">esrdt</a></li>
+				{% endblock %}
+			</ul>
+			<div class="span9">
+				{% block content %}
+				Oops, looks like I forgot to override this block...<br />
+				If you're not me, please <a href="http://twitter.com/uppfinnarn" target="_blank">tell me</a>!
+				{% endblock %}
+			</div>
 		</div>
 	</div>
 </body>
