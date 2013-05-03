@@ -54,11 +54,15 @@ def teardown_request(exception):
 	if hasattr(g, 'db'):
 		g.db.close()
 
+
+
+@app.route('/')
+def home():
+	return render_template('home.html')
+
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
 	if request.method == 'POST':
-		#if request.form['password'] == app.config['SITE_PASSWORD']:
-		#	session['authorized'] = True
 		db = db_connect(request.form['password'])
 		success = True
 		
@@ -75,10 +79,6 @@ def login():
 			session['password'] = request.form['password']
 			return redirect(url_for('home'))
 	return render_template('login.html')
-
-@app.route('/')
-def home():
-	return render_template('home.html')
 
 @app.route('/posts/')
 def posts():
