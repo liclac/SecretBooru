@@ -17,16 +17,17 @@ class Post(object):
 	id = 0
 	added = None
 	rating = 'q'
+	key = None
 	
-	def __init__(self, id, added_ut, rating):
+	def __init__(self, id, added_ut, rating, key):
 		self.id = id
 		self.added = datetime.fromtimestamp(added_ut)
 		self.rating = rating
 	
 	@classmethod
-	def get(cls, db, id):
-		c = db.cursor()
-		rec = db.execute("SELECT ROWID, added, rating FROM posts WHERE ROWID = ?", [id]).fetchone()
+	def get(cls, id):
+		c = g.db.cursor()
+		rec = c.execute("SELECT ROWID, added, rating, key FROM posts WHERE ROWID = ?", [id]).fetchone()
 		if rec is None:
 			return None
 		return cls(rec[0], rec[1], rec[2])
@@ -86,7 +87,7 @@ def posts():
 
 @app.route('/posts/<int:id>/')
 def post(id):
-	post = Post.get(g.db, id)
+	post = Post.get(id)
 	if post is None:
 		abort(404)
 	return render_template('post.html', post=post)
