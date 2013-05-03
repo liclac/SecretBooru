@@ -22,6 +22,8 @@ class Post(object):
 	mime = 'text/plain'	#lolnope
 	key = None
 	
+	basequery = "SELECT ROWID, added, rating, mime, key FROM posts"
+	
 	def __init__(self, id, added_ut, rating, mime, key):
 		self.id = id
 		self.added = datetime.fromtimestamp(added_ut)
@@ -31,10 +33,18 @@ class Post(object):
 	@classmethod
 	def get(cls, id):
 		c = g.db.cursor()
-		rec = c.execute("SELECT ROWID, added, rating, mime, key FROM posts WHERE ROWID = ?", [id]).fetchone()
+		rec = c.execute(cls.basequery + " WHERE ROWID = ?", [id]).fetchone()
 		if rec is None:
 			return None
 		return cls(*rec)
+	
+	@classmethod
+	def all(cls):
+		c = g.db.cursor()
+		l = []
+		for rec in c.execute(cls.basequery).fetchall():
+			l.append(cls(*rec))
+		return l
 
 def db_connect(password):
 	db = dbapi2.connect(path(app.config['DB_NAME']))
@@ -91,7 +101,7 @@ def logout():
 
 @app.route('/posts/')
 def posts():
-	posts = None
+	posts = Post.all()
 	return render_template('posts.html', posts=posts)
 
 @app.route('/posts/<int:id>/')
@@ -126,11 +136,7 @@ def import_():
 			local.write(remote.read())
 		
 		g.db.commit()
-		
-		#return (response.read(), 200, [('Content-Type', info['Content-Type'])])
-		#return response.read()
-		#c = g.db.cursor()
-		#c.execute("INSERT INTO posts (rating, )")
+		return redirect(url_for('post', id=id))
 	return render_template('import.html', post=post)
 
 if __name__ == '__main__':

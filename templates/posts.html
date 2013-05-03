@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Posts{% endblock %}
 {% block content %}
-Put something here...
+{% for post in posts %}
+<a class="thumb" href="{{ url_for('post', id=post.id) }}">
+	<img src="{{ url_for('image', id=post.id) }}" />
+</a>
+<a class="thumb" href="{{ url_for('post', id=post.id) }}">
+	<img src="{{ url_for('image', id=post.id) }}" />
+</a>
+<a class="thumb" href="{{ url_for('post', id=post.id) }}">
+	<img src="{{ url_for('image', id=post.id) }}" />
+</a>
+{% endfor %}
 {% endblock %}
