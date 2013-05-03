@@ -17,17 +17,19 @@ class Post(object):
 	id = 0
 	added = None
 	rating = 'q'
+	mime = 'text/plain' #lolnope
 	key = None
 	
-	def __init__(self, id, added_ut, rating, key):
+	def __init__(self, id, added_ut, rating, mime, key):
 		self.id = id
 		self.added = datetime.fromtimestamp(added_ut)
+		self.mime = mime
 		self.rating = rating
 	
 	@classmethod
 	def get(cls, id):
 		c = g.db.cursor()
-		rec = c.execute("SELECT ROWID, added, rating, key FROM posts WHERE ROWID = ?", [id]).fetchone()
+		rec = c.execute("SELECT ROWID, added, rating, mime, key FROM posts WHERE ROWID = ?", [id]).fetchone()
 		if rec is None:
 			return None
 		return cls(rec[0], rec[1], rec[2])
@@ -79,6 +81,11 @@ def login():
 			session['password'] = request.form['password']
 			return redirect(url_for('home'))
 	return render_template('login.html')
+
+@app.route('/logout/')
+def logout():
+	session.clear()
+	return redirect(url_for('login'))
 
 @app.route('/posts/')
 def posts():

@@ -29,6 +29,7 @@
 			</div>
 		</header>
 		<div class="row" id="content" role="main">
+			
 			{% with messages = get_flashed_messages() %}
 			{% if messages %}
 				{% for message in messages %}
@@ -36,6 +37,9 @@
 				{% endfor %}
 			{% endif %}
 			{% endwith %}
+			
+			{% block fullcontent %}
+			
 			<ul class="span3 nav nav-list well" id="sidebar">
 				{% block sidebar %}
 				<li class="nav-header">Header</li>
@@ -49,6 +53,8 @@
 				If you're not me, please <a href="http://twitter.com/uppfinnarn" target="_blank">tell me</a>!
 				{% endblock %}
 			</div>
+			
+			{% endblock %}
 		</div>
 	</div>
 </body>
