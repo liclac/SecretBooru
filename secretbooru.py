@@ -6,6 +6,7 @@ from datetime import datetime
 from flask import Flask, session, request, g
 from flask import url_for, redirect, abort, render_template, flash
 from pysqlcipher import dbapi2
+from Crypto.Cipher import AES
 from Crypto import Random
 
 app = Flask(__name__)
@@ -29,6 +30,10 @@ class Post(object):
 		self.added = datetime.strptime(added, '%Y-%m-%d %H:%M:%S')
 		self.mime = mime
 		self.rating = rating
+	
+	def get_data(self, thumb=False):
+		with open(path('media/%s' % (self.id, '_thumb' if thumb else ''))) as f:
+			return f.read()
 	
 	@classmethod
 	def get(cls, id):
@@ -114,20 +119,18 @@ def post(id):
 @app.route('/posts/<int:id>/image')
 def image(id):
 	post = Post.get(id)
-	if not post:
+	if post:
+		return (post.get_data(True), 200, [('Content-Type', post.mime)])
+	else:
 		abort(404)
-	
-	with open(path('media/%s' % post.id)) as f:
-		return (f.read(), 200, [('Content-Type', post.mime)])
 
 @app.route('/posts/<int:id>/thumb')
 def thumb(id):
 	post = Post.get(id)
-	if not post:
+	if post:
+		return (post.get_data(), 200, [('Content-Type', post.mime)])
+	else:
 		abort(404)
-	
-	with open(path('media/%s_thumb' % post.id)) as f:
-		return (f.read(), 200, [('Content-Type', post.mime)])
 
 @app.route('/posts/import/', methods=['GET', 'POST'])
 def import_():
