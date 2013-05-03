@@ -30,11 +30,11 @@
 		</header>
 		<div class="row" id="content" role="main">
 			{% with messages = get_flashed_messages() %}
-				{% if messages %}
-					{% for message in messages %}
-						<p class="alert alert-error">{{ message }}</p>
-					{% endfor %}
-				{% endif %}
+			{% if messages %}
+				{% for message in messages %}
+				<p class="alert alert-error">{{ message }}</p>
+				{% endfor %}
+			{% endif %}
 			{% endwith %}
 			<ul class="span3 nav nav-list well" id="sidebar">
 				{% block sidebar %}
