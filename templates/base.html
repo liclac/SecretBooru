@@ -1,0 +1,39 @@
+{% macro nav_li(endpoint, name) %}
+	{%- if url_for(endpoint) == request.script_root + request.path -%}
+		<li class="active"><a href="{{ url_for(endpoint) }}">{{ name|safe }}</a></li>
+	{%- else -%}
+		<li><a href="{{ url_for(endpoint) }}">{{ name|safe }}</a></li>
+	{%- endif -%}
+{% endmacro %}<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %}UNTITLED{% endblock %} | MacaroniCode</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet" />
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.0.2/css/font-awesome.css" rel="stylesheet" />
+	{% block css %}<link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet" />{% endblock %}
+</head>
+<body>
+	<div class="container">
+		<header id="header" class="page-header" role="header">
+			<h1 role="banner">
+				MacaroniCode{# <small>{% block headline %}&nbsp;{% endblock %}</small>#}
+			</h1>
+			<div class="navbar" role="navigation">
+				<div class="navbar-inner">
+					<ul class="nav">
+						{{ nav_li('home', 'Home') }}
+						{#{{ nav_li('blog', 'Blog') }}#}
+					</ul>
+				</div>
+			</div>
+		</header>
+		<div id="content" role="main">
+			{% block content %}
+			Oops, looks like I forgot to override this block...<br />
+			If you're not me, please <a href="http://twitter.com/uppfinnarn" target="_blank">tell me</a>!
+			{% endblock %}
+		</div>
+	</div>
+</body>
+</html>

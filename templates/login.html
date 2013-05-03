@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<form action="." method="POST" id="login-form">
+	<div class="input-append">
+		<input type="password" name="password" placeholder="Password" />
+		<input type="submit" value="Login" class="btn" />
+	</div>
+</form>
+{% endblock %}
