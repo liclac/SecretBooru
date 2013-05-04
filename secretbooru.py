@@ -85,7 +85,6 @@ def image(id):
 	post = Post.get(id)
 	if post:
 		return (post.get_data(), 200, [('Content-Type', post.mime)])
-		#return (post.key, 200, [('Content-Type', 'text/plain')])
 	else:
 		abort(404)
 
