@@ -2,5 +2,5 @@ CREATE TABLE posts (
 	added TEXT DEFAULT CURRENT_TIMESTAMP,
 	rating TEXT,
 	mime TEXT,
-	key BLOB
+	key TEXT
 )
