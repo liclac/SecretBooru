@@ -66,7 +66,7 @@ def inject_import_sources():
 	return {
 		'import_sources': [
 			('URL', 'import_url'),
-			#('Gelbooru', 'import_gelbooru')
+			('Gelbooru', 'import_gelbooru')
 		]
 	}
 
@@ -176,7 +176,18 @@ def import_url():
 @app.route('/import/gelbooru/', methods=['GET', 'POST'])
 def import_gelbooru():
 	if request.method == 'POST':
-		pass
+		import xml.etree.ElementTree as ET
+		data = urllib2.urlopen('http://gelbooru.com/index.php?page=dapi&s=post&q=index&id=%s' % request.form['pid']).read()
+		d = ET.fromstring(data)[0].attrib
+		print d
+		
+		post = Post.download(
+			url=d['file_url'],
+			tagnames=d['tags'].strip().split(' '),
+			rating=d['rating']
+		)
+		
+		return redirect(url_for('post', id=post.id))
 	return render_template('import_gelbooru.html')
 
 if __name__ == '__main__':

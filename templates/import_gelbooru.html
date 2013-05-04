@@ -1,0 +1,24 @@
+{% extends "import_form.html" %}
+{% block title %}Import from Gelbooru{% endblock %}
+{% block body_after %}
+<script type="text/javascript">
+var base_url = 'http://gelbooru.com/index.php?page=post&s=view&id='
+$('#pid').keyup(function(e) {
+	if($(this).val() != '') {
+		var url = base_url + $(this).val()
+		$('#source-link').text(url).attr('href', url)
+	} else {
+		$('#source-link').text('')
+	}
+})
+</script>
+{% endblock %}
+{% block fields %}
+	<div class="control-group">
+		<label class="control-label" for="pid">Post ID</label>
+		<div class="controls">
+			<input type="number" name="pid" id="pid" class="span6" placeholder="0000000" />
+			<a id="source-link" style="display:block;"></a>
+		</div>
+	</div>
+{% endblock %}
