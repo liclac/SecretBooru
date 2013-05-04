@@ -19,16 +19,17 @@
 			<div class="navbar" role="navigation">
 				<div class="navbar-inner">
 					<a class="brand" href="{{ url_for('home') }}">SecretBooru</a>
+					{% if 'password' in session %}
 					<ul class="nav">
-						{% if 'password' in session %}
 						{#{{ nav_li('home', 'Upload') }}#}
 						{{ nav_li('import_', 'Import') }}
 						{{ nav_li('posts', 'Posts') }}
-						{% endif %}
+						{{ nav_li('logout', 'Log out') }}
 					</ul>
 					<form class="navbar-search pull-right" action="{{ url_for('posts') }}" method="GET">
 						<input type="text" name="q" class="search-query" placeholder="Search">
 					</form>
+					{% endif %}
 				</div>
 			</div>
 		</header>
