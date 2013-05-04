@@ -8,7 +8,7 @@ path = lambda filename: os.path.join(site_root, filename)
 def createdb(password):
 	db_path = path(settings.DB_NAME)
 	if os.path.exists(db_path):
-		ans = raw_input("Database Exists, overwrite? (y/N)")
+		ans = raw_input("Database Exists, overwrite? (y/N) ")
 		if not ans.lower() == 'y':
 			return
 		os.remove(db_path)
@@ -18,9 +18,23 @@ def createdb(password):
 	with open(path('schema.sql')) as f:
 		db.executescript(f.read())
 
+def reset(password):
+	db_path = path(settings.DB_NAME)
+	if os.path.exists(db_path):
+		ans = raw_input("Delete all data and media? (y/N) ")
+		if not ans.lower() == 'y':
+			return
+		os.remove(db_path)
+	media_path = path('media')
+	for filename in [ n in os.listdir(media_path) if n != '.gitkeep' ]:
+		os.remove(os.path.join(media_path, filename))
+	
+	createdb(password)
+
 if __name__ == '__main__':
 	handlers = {
 		'createdb': createdb,
+		'reset': reset
 	}
 	
 	if len(sys.argv) <= 1 or sys.argv[1] not in handlers:
@@ -29,6 +43,11 @@ if __name__ == '__main__':
 		
 		print "createdb <password>"
 		print "    Creates a new database with the given password."
+		print " "
+		
+		print "reset <password>"
+		print "    Deletes all content (database and media) and"
+		print "    creates a new database with the given password."
 		print " "
 		
 		exit()
