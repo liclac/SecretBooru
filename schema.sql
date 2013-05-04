@@ -19,3 +19,8 @@ CREATE TABLE posts_tags (
 	FOREIGN KEY(tid) REFERENCES tags(id) ON DELETE CASCADE,
 	UNIQUE(pid, tid) ON CONFLICT REPLACE
 );
+
+CREATE TRIGGER clear_empty_tags AFTER DELETE ON posts
+BEGIN
+	DELETE FROM tags WHERE id NOT IN (SELECT tid FROM posts_tags);
+END;
