@@ -1,12 +1,35 @@
 {% extends "two-columns.html" %}
 {% block title %}Posts in Tag{% endblock %}
+{% block body_after %}
+	<script type="text/javascript">
+	$('#modal-delete-confirm').click(delete_self)
+	</script>
+{% endblock %}
 {% block sidebar %}
-<li class="nav-header">{{ tag.name }}</li>
+	<li class="nav-header">{{ tag.name }}</li>
+	<li><a href="#delete-modal" role="button" data-toggle="modal">Delete</a></li>
 {% endblock %}
 {% block content %}
-{% for post in tag.get_posts() %}
-<a class="thumb" href="{{ url_for('post', id=post.id) }}">
-	<img src="{{ url_for('thumb', id=post.id) }}" />
-</a>
-{% endfor %}
+	<div id="delete-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="delete-model-label" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="delete-model-label">Delete the <em>{{ tag.name }}</em> tag?</h3>
+		</div>
+		<div class="modal-body">
+			<p>
+				Deleting a tag only deletes the tag itself, no posts are touched.<br />
+				You can always recreate it by assigning it to any post again.
+			</p>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			<button class="btn btn-danger" id="modal-delete-confirm">Delete</button>
+		</div>
+	</div>
+	
+	{% for post in tag.get_posts() %}
+	<a class="thumb" href="{{ url_for('post', id=post.id) }}">
+		<img src="{{ url_for('thumb', id=post.id) }}" />
+	</a>
+	{% endfor %}
 {% endblock %}

@@ -133,6 +133,11 @@ class Tag(object):
 		posts = [ Post.get(rel[0]) for rel in rels ]
 		return posts
 	
+	def delete(self):
+		c = g.db.cursor()
+		c.execute("DELETE FROM tags WHERE ROWID = ?", (self.id,))
+		g.db.commit()
+	
 	# NOTE: This function does NOT commit!
 	@classmethod
 	def get_or_create(cls, name, type='standard'):

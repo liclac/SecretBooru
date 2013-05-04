@@ -110,7 +110,7 @@ def post(id):
 	post=get_post_or_404(id)
 	if request.method == 'DELETE':
 		post.delete()
-		return "OK"
+		return url_for('posts')
 	return render_template('post.html', post=post)
 
 @app.route('/posts/<int:id>/image')
@@ -133,9 +133,13 @@ def thumb(id):
 def tags():
 	return render_template('tags.html', tags=Tag.all())
 
-@app.route('/tags/<int:id>/')
+@app.route('/tags/<int:id>/', methods=['GET', 'DELETE'])
 def tag(id):
-	return render_template('tag.html', tag=get_tag_by_id_or_404(id))
+	tag=get_tag_by_id_or_404(id)
+	if request.method == 'DELETE':
+		tag.delete()
+		return url_for('tags')
+	return render_template('tag.html', tag=tag)
 
 @app.route('/import/', methods=['GET', 'POST'])
 def import_():
@@ -178,7 +182,10 @@ def import_gelbooru():
 	if request.method == 'POST':
 		import xml.etree.ElementTree as ET
 		data = urllib2.urlopen('http://gelbooru.com/index.php?page=dapi&s=post&q=index&id=%s' % request.form['pid']).read()
-		d = ET.fromstring(data)[0].attrib
+		root = ET.fromstring(data)
+		if len(root) < 1:
+			abort(404)
+		d = root[0].attrib
 		
 		post = Post.download(
 			url=d['file_url'],
