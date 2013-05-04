@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
-import os, re, struct, io
+import os, re
 import urllib2
-import base64
-from datetime import datetime
-from StringIO import StringIO	# Can't use cStringIO because binary
 from flask import Flask, session, request, g
 from flask import url_for, redirect, abort, render_template, flash
 from pysqlcipher import dbapi2
@@ -17,11 +14,6 @@ app.config.from_object('settings')
 app.config.from_object('secrets')
 
 site_root = os.path.abspath(os.path.dirname(__file__))
-
-# http://stackoverflow.com/questions/12562021/aes-decryption-padding-with-pkcs5-python
-#BS = AES.block_size
-#pad = lambda s: s + (BS - len(s) % BS) * chr(BS - len(s) % BS)
-#unpad = lambda s : s[0:-ord(s[-1])]
 
 def db_connect(password):
 	db = dbapi2.connect(path(app.config['DB_NAME']))
@@ -107,23 +99,10 @@ def thumb(id):
 
 @app.route('/posts/import/', methods=['GET', 'POST'])
 def import_():
-	from StringIO import StringIO
-	import Image
-	
 	if request.method == 'POST':
 		remote = urllib2.urlopen(request.form['url'])
 		info = remote.info()
 		mime = info['Content-Type']
-		#key = Random.new().read(64)
-		
-		#c = g.db.cursor()
-		#c.execute("INSERT INTO posts (rating, mime) VALUES (?, ?)", ('q', mime))
-		#id = c.lastrowid
-		
-		#post = Post.get(id)
-		#post.set_data(remote.read(), mime.split('/')[-1])
-		
-		#g.db.commit()
 		
 		post = Post()
 		post.mime = mime
