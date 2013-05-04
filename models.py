@@ -16,10 +16,13 @@ class Post(object):
 	
 	def __init__(self, id=-1, added=datetime.now(), rating='q', mime='', key=None):
 		self.id = id
-		self.added = datetime.strptime(added, self.date_format)
+		self.added = added
 		self.rating = rating
 		self.mime = mime
 		self.key = key
+		
+		if type(self.added) == str:
+			self.added = datetime.strptime(added, self.date_format)
 	
 	def path(self, thumb=False):
 		suffix = ''

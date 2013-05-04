@@ -118,6 +118,7 @@ def import_():
 		
 		post = Post()
 		post.mime = mime
+		post.rating = request.form['rating']
 		post.save()
 		
 		post.set_tags(tagnames)
