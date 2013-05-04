@@ -1,0 +1,33 @@
+{% extends "import_form.html" %}
+{% block title %}Import from URL{% endblock %}
+{% block fields %}
+	<div class="control-group">
+		<label class="control-label" for="url">URL</label>
+		<div class="controls">
+			<input type="url" name="url" id="url" class="span6" placeholder="http://" />
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="tags">Tags</label>
+		<div class="controls">
+			<textarea name="tags" id="tags" class="span6" placeholder="tag1 tag2 tag3 ..."></textarea>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="rating">Rating</label>
+		<div class="controls">
+			<label class="radio">
+				<input type="radio" name="rating" id="rating_s" value="s" />
+				Safe
+			</label>
+			<label class="radio">
+				<input type="radio" name="rating" id="rating_q" value="q" checked="checked" />
+				Questionable
+			</label>
+			<label class="radio">
+				<input type="radio" name="rating" id="rating_e" value="e" />
+				Explicit
+			</label>
+		</div>
+	</div>
+{% endblock %}

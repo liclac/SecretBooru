@@ -1,10 +1,4 @@
-{% macro nav_li(endpoint, name) %}
-	{%- if url_for(endpoint) == request.script_root + request.path -%}
-		<li class="active"><a href="{{ url_for(endpoint) }}">{{ name|safe }}</a></li>
-	{%- else -%}
-		<li><a href="{{ url_for(endpoint) }}">{{ name|safe }}</a></li>
-	{%- endif -%}
-{% endmacro %}<!DOCTYPE html>
+{% from "macros.html" import active, nav_li with context %}<!DOCTYPE html>
 <html>
 <head>
 	<title>{% block title %}UNTITLED{% endblock %} | SecretBooru</title>
@@ -21,7 +15,17 @@
 					<a class="brand" href="{{ url_for('home') }}">SecretBooru</a>
 					{% if 'password' in session %}
 					<ul class="nav">
-						{{ nav_li('import_', 'Import') }}
+						{#{{ nav_li('import_', 'Import') }}#}
+						<li class="dropdown {{ active('import_') }}">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								Import <b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								{% for source in import_sources %}
+								{#<li class="{{ active(source[1]) }}"><a href="{{ url_for(source[1]) }}">{{ source[0] }}</a></li>#}
+								{{ nav_li(source[1], source[0]) }}
+								{% endfor %}
+							</ul>
 						{{ nav_li('posts', 'Posts') }}
 						{{ nav_li('tags', 'Tags') }}
 					</ul>

@@ -61,6 +61,15 @@ def teardown_request(exception):
 	if hasattr(g, 'db'):
 		g.db.close()
 
+@app.context_processor
+def inject_import_sources():
+	return {
+		'import_sources': [
+			('URL', 'import_url'),
+			#('Gelbooru', 'import_gelbooru')
+		]
+	}
+
 
 
 @app.route('/')
@@ -149,6 +158,26 @@ def import_():
 		
 		return redirect(url_for('post', id=post.id))
 	return render_template('import.html')
+
+@app.route('/import/url/', methods=['GET', 'POST'])
+def import_url():
+	if request.method == 'POST':
+		post = Post.download(
+			url = request.form['url'],
+			tagnames = request.form['tags'].strip().split(' '),
+			rating = request.form['rating']
+		)
+		
+		g.db.commit()
+		
+		return redirect(url_for('post', id=post.id))
+	return render_template('import_url.html')
+
+@app.route('/import/gelbooru/', methods=['GET', 'POST'])
+def import_gelbooru():
+	if request.method == 'POST':
+		pass
+	return render_template('import_gelbooru.html')
 
 if __name__ == '__main__':
 	app.run()

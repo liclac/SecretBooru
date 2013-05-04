@@ -1,0 +1,12 @@
+{% extends "import.html" %}
+{% block title %}Import Image{% endblock %}
+{% block content %}
+	<form action="." method="POST" class="form-horizontal">
+		{% block fields %}{% endblock %}
+		<div class="control-group">
+			<div class="controls">
+				<input type="submit" class="btn" value="Import" />
+			</div>
+		</div>
+	</form>
+{% endblock %}

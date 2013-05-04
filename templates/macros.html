@@ -1,0 +1,12 @@
+{% macro nav_li(endpoint, name) %}
+	{#{%- if url_for(endpoint) == request.script_root + request.path -%}#}
+	{%- if (request.script_root + request.path).startswith(url_for(endpoint)) -%}
+		<li class="active"><a href="{{ url_for(endpoint) }}">{{ name|safe }}</a></li>
+	{%- else -%}
+		<li><a href="{{ url_for(endpoint) }}">{{ name|safe }}</a></li>
+	{%- endif -%}
+{% endmacro %}
+
+{% macro active(endpoint) %}
+	{% if (request.script_root + request.path).startswith(url_for(endpoint)) %}active{% endif %}
+{% endmacro %}

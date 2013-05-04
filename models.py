@@ -1,4 +1,5 @@
 import os
+import urllib2
 from datetime import datetime
 from cStringIO import StringIO
 from flask import g
@@ -100,6 +101,19 @@ class Post(object):
 		for rec in c.execute(cls.base_query).fetchall():
 			l.append(cls(*rec))
 		return l
+	
+	@classmethod
+	def download(cls, url, tagnames=[], **kwargs):
+		remote = urllib2.urlopen(url)
+		info = remote.info()
+		mime = info['Content-Type']
+		
+		post = cls(mime=mime, **kwargs)
+		post.save()
+		post.set_tags(tagnames)
+		post.set_data(remote.read(), mime.split('/')[-1])
+		
+		return post
 
 class Tag(object):
 	id = -1
