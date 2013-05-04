@@ -20,7 +20,7 @@ CREATE TABLE posts_tags (
 	UNIQUE(pid, tid) ON CONFLICT REPLACE
 );
 
-CREATE TRIGGER clear_empty_tags AFTER DELETE ON posts
+CREATE TRIGGER clear_empty_tags AFTER DELETE ON posts_tags
 BEGIN
 	DELETE FROM tags WHERE id NOT IN (SELECT tid FROM posts_tags);
 END;
