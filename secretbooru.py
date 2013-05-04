@@ -179,7 +179,6 @@ def import_gelbooru():
 		import xml.etree.ElementTree as ET
 		data = urllib2.urlopen('http://gelbooru.com/index.php?page=dapi&s=post&q=index&id=%s' % request.form['pid']).read()
 		d = ET.fromstring(data)[0].attrib
-		print d
 		
 		post = Post.download(
 			url=d['file_url'],
