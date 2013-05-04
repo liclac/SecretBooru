@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block fullcontent %}
+<ul class="span3 nav nav-list well" id="sidebar">
+	{% block sidebar %}
+	<li class="nav-header">Header</li>
+	<li><a href="#">Item 1</a></li>
+	<li><a href="#">Item 2</a></li>
+	{% endblock %}
+</ul>
+<div class="span9 clearfix">
+	{% block content %}
+	Oops, looks like I forgot to override this block...<br />
+	If you're not me, please <a href="http://twitter.com/uppfinnarn" target="_blank">tell me</a>!
+	{% endblock %}
+</div>
+{% endblock %}
