@@ -31,10 +31,18 @@ def reset(password):
 	
 	createdb(password)
 
+def dbshell(password):
+	db = dbapi2.connect(path(settings.DB_NAME))
+	db.execute("PRAGMA key = '%s'" % re.escape(password))
+	while True:
+		res = db.execute(raw_input("> ")).fetchall()
+		print ', '.join(res)
+
 if __name__ == '__main__':
 	handlers = {
 		'createdb': createdb,
-		'reset': reset
+		'reset': reset,
+		'dbshell': dbshell
 	}
 	
 	if len(sys.argv) <= 1 or sys.argv[1] not in handlers:
@@ -48,6 +56,11 @@ if __name__ == '__main__':
 		print "reset <password>"
 		print "    Deletes all content (database and media) and"
 		print "    creates a new database with the given password."
+		print " "
+		
+		print "dbshell <password>"
+		print "    Starts a database shell, decrypting the database"
+		print "    with the given password."
 		print " "
 		
 		exit()
