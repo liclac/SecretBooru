@@ -31,6 +31,7 @@ def db_connect(password):
 	# TODO: Use something better than re.escape for this
 	# For some reason, normal '?' placeholders don't work for PRAGMA's
 	db.execute("PRAGMA key = '%s'" % re.escape(password))
+	db.execute("PRAGMA foreign_keys = ON;")
 	return db
 
 def get_post_or_404(id):
