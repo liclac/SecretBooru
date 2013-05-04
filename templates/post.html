@@ -1,5 +1,16 @@
 {% extends "two-columns.html" %}
 {% block title %}Viewing Post{% endblock %}
+{% block body_after %}
+<script type="text/javascript">
+$('#modal-delete-confirm').click(function() {
+	$.ajax({
+		type: 'DELETE'
+	}).done(function(data) {
+		if(data == 'OK') { window.location = "{{ url_for('posts') }}" }
+	})
+})
+</script>
+{% endblock %}
 {% block sidebar %}
 	<li class="nav-header">Tags</li>
 	{% for tag in post.get_tags() %}
@@ -7,9 +18,28 @@
 	{% endfor %}
 	
 	<li class="nav-header">Actions</li>
-	
+	<li><a href="#myModal" role="button" data-toggle="modal">Delete</a></li>
 {% endblock %}
 {% block content %}
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel">Delete this post?</h3>
+	</div>
+	<div class="modal-body">
+		<p>When you delete a post, all of the following is gone forever:</p>
+		<ul>
+			<li>The image files (after they are overwritten with zeroes).</li>
+			<li>The database record (including the image's unique encryption key).</li>
+			<li>Tags containing only this post.</li>
+		</ul>
+		<p>Restoring a deleted post should prove VERY difficult.</p>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<button class="btn btn-danger" id="modal-delete-confirm">Delete</button>
+	</div>
+</div>
 	<img src="image" />
 	<p>&nbsp;</p>
 {% endblock %}

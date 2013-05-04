@@ -1,8 +1,9 @@
+import os
 from datetime import datetime
 from cStringIO import StringIO
 from flask import g
 from crypto import dencrypt, ddecrypt
-from util import path
+from util import path, zerofill_delete
 
 class Post(object):
 	id = -1
@@ -75,6 +76,13 @@ class Post(object):
 		else:
 			c.execute("UPDATE posts SET added = ?, rating = ?, mime = ? WHERE ROWID = ?",
 				(self.added, self.rating, self.mime, self.id))
+		g.db.commit()
+	
+	def delete(self):
+		zerofill_delete(self.path(thumb=True))
+		zerofill_delete(self.path(thumb=False))
+		c = g.db.cursor()
+		c.execute("DELETE FROM posts WHERE ROWID = ?", (self.id,))
 		g.db.commit()
 	
 	@classmethod

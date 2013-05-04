@@ -33,6 +33,18 @@ def db_connect(password):
 	db.execute("PRAGMA key = '%s'" % re.escape(password))
 	return db
 
+def get_post_or_404(id):
+	post = Post.get(id)
+	if not post:
+		abort(404)
+	return post
+
+def get_tag_by_id_or_404(id):
+	tag = Tag.get_by_id(id)
+	if not tag:
+		abort(404)
+	return tag
+
 
 
 @app.before_request
@@ -83,11 +95,12 @@ def logout():
 def posts():
 	return render_template('posts.html', posts=Post.all())
 
-@app.route('/posts/<int:id>/')
+@app.route('/posts/<int:id>/', methods=['GET', 'DELETE'])
 def post(id):
-	post = Post.get(id)
-	if not post:
-		abort(404)
+	post=get_post_or_404(id)
+	if request.method == 'DELETE':
+		post.delete()
+		return "OK"
 	return render_template('post.html', post=post)
 
 @app.route('/posts/<int:id>/image')
@@ -112,11 +125,7 @@ def tags():
 
 @app.route('/tags/<int:id>/')
 def tag(id):
-	tag = Tag.get_by_id(id)
-	if tag:
-		return render_template('tag.html', tag=tag)
-	else:
-		abort(404)
+	return render_template('tag.html', tag=get_tag_by_id_or_404(id))
 
 @app.route('/import/', methods=['GET', 'POST'])
 def import_():
