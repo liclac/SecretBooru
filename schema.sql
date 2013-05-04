@@ -3,4 +3,16 @@ CREATE TABLE posts (
 	rating TEXT,
 	mime TEXT,
 	key TEXT
-)
+);
+
+CREATE TABLE tags (
+	name TEXT,
+	type TEXT
+);
+
+CREATE TABLE posts_tags (
+	pid INTEGER,
+	tid INTEGER,
+	FOREIGN KEY(pid) REFERENCES posts(ROWID) ON DELETE CASCADE,
+	FOREIGN KEY(tid) REFERENCES tags(ROWID) ON DELETE CASCADE
+);

@@ -1,10 +1,23 @@
 {% extends "base.html" %}
 {% block title %}Import Image{% endblock %}
 {% block content %}
-<form action="." method="POST">
-	<div class="input-append">
-		<input type="url" name="url" placeholder="Enter URL" />
-		<input type="submit" class="btn" value="Import" />
+<form action="." method="POST" class="form-horizontal">
+	<div class="control-group">
+		<label class="control-label" for="url">URL</label>
+		<div class="controls">
+			<input type="url" name="url" id="url" class="input-block-level" placeholder="http://" />
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="tags">Tags</label>
+		<div class="controls">
+			<textarea name="tags" id="tags" class="input-block-level" placeholder="tag1 tag2 tag3 ..."></textarea>
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+			<input type="submit" class="btn" value="Import" />
+		</div>
 	</div>
 </form>
 {% endblock %}

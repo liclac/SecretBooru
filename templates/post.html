@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Viewing Post{% endblock %}
+{% block sidebar %}
+<li class="nav-header">Tags</li>
+{% for tag in post.get_tags() %}
+<li><a href="#">{{ tag.name }}</a></li>
+{% endfor %}
+{% endblock %}
 {% block content %}
 <img src="image" />
-<p>Added {{ post.added }}</p>
+<p>&nbsp;</p>
 {% endblock %}

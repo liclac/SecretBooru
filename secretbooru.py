@@ -6,7 +6,7 @@ from flask import Flask, session, request, g
 from flask import url_for, redirect, abort, render_template, flash
 from pysqlcipher import dbapi2
 
-from models import Post
+from models import Post, Tag
 from util import path
 
 app = Flask(__name__)
@@ -96,18 +96,23 @@ def thumb(id):
 	else:
 		abort(404)
 
-@app.route('/posts/import/', methods=['GET', 'POST'])
+@app.route('/import/', methods=['GET', 'POST'])
 def import_():
 	if request.method == 'POST':
 		remote = urllib2.urlopen(request.form['url'])
 		info = remote.info()
 		mime = info['Content-Type']
 		
+		tagnames = request.form['tags'].strip().split(' ')
+		
 		post = Post()
 		post.mime = mime
 		post.save()
 		
+		post.set_tags(tagnames)
 		post.set_data(remote.read(), mime.split('/')[-1])
+		
+		g.db.commit()
 		
 		return redirect(url_for('image', id=post.id))
 	return render_template('import.html')
