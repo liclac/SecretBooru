@@ -1,17 +1,23 @@
 #!/usr/bin/env python
 # encoding: utf-8
 import os, re
+from base64 import b64encode
 import urllib2
 from flask import Flask, session, request, g
 from flask import url_for, redirect, abort, render_template, flash
 from pysqlcipher import dbapi2
+from Crypto import Random
 
 from models import Post, Tag
 from util import path
 
 app = Flask(__name__)
 app.config.from_object('settings')
-app.config.from_object('secrets')
+
+# Auto-regenerate the secret key on startup.
+# This makes session hijacking virtually impossible, and
+# we don't exactly need persistent logins
+app.config['SECRET_KEY'] = b64encode(Random.new().read(64))
 
 site_root = os.path.abspath(os.path.dirname(__file__))
 
