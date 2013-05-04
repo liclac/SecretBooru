@@ -12,12 +12,17 @@ from models import Post, Tag
 from util import path
 
 app = Flask(__name__)
+app.config.from_object('secrets')
 app.config.from_object('settings')
 
-# Auto-regenerate the secret key on startup.
+# Auto-regenerate the secret key in release mode.
 # This makes session hijacking virtually impossible, and
-# we don't exactly need persistent logins
-app.config['SECRET_KEY'] = b64encode(Random.new().read(64))
+# we don't exactly need persistent logins.
+# 
+# Debug mode makes this impractical, so there you should
+# use a secrets.py file with SECRET_KEY defined.
+if not app.config['DEBUG'] or 'SECRET_KEY' not in app.config:
+	app.config['SECRET_KEY'] = b64encode(Random.new().read(64))
 
 site_root = os.path.abspath(os.path.dirname(__file__))
 
