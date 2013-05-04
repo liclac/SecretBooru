@@ -35,8 +35,19 @@ def dbshell(password):
 	db = dbapi2.connect(path(settings.DB_NAME))
 	db.execute("PRAGMA key = '%s'" % re.escape(password))
 	while True:
-		res = db.execute(raw_input("> ")).fetchall()
-		print ', '.join(res)
+		try:
+			cmd = raw_input("> ")
+			if cmd == '.q':
+				return
+			
+			res = db.execute(cmd).fetchall()
+			for row in res:
+				if type(row) == tuple:
+					print ', '.join([str(i) for i in row])
+				else:
+					print row
+		except Exception as e:
+			print "%s: %s" % (e.__class__.__name__, e)
 
 if __name__ == '__main__':
 	handlers = {
