@@ -126,7 +126,7 @@ def import_():
 		
 		g.db.commit()
 		
-		return redirect(url_for('image', id=post.id))
+		return redirect(url_for('post', id=post.id))
 	return render_template('import.html')
 
 if __name__ == '__main__':

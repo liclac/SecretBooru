@@ -26,7 +26,7 @@ def reset(password):
 			return
 		os.remove(db_path)
 	media_path = path('media')
-	for filename in [ n in os.listdir(media_path) if n != '.gitkeep' ]:
+	for filename in [ n for n in os.listdir(media_path) if n != '.gitkeep' ]:
 		os.remove(os.path.join(media_path, filename))
 	
 	createdb(password)
