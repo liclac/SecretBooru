@@ -2,11 +2,13 @@
 {% block title %}Posts in Tag{% endblock %}
 {% block body_after %}
 	<script type="text/javascript">
-	$('#modal-delete-confirm').click(delete_self)
+		$('#modal-delete-confirm').click(delete_self)
+		$('#modal-save-confirm').click(function(e) { $('#save-form').submit() })
 	</script>
 {% endblock %}
 {% block sidebar %}
 	<li class="nav-header">{{ tag.name }}</li>
+	<li><a href="#edit-modal" role="button" data-toggle="modal">Edit</a></li>
 	<li><a href="#delete-modal" role="button" data-toggle="modal">Delete</a></li>
 {% endblock %}
 {% block content %}
@@ -24,6 +26,48 @@
 		<div class="modal-footer">
 			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 			<button class="btn btn-danger" id="modal-delete-confirm">Delete</button>
+		</div>
+	</div>
+	
+	<div id="edit-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="edit-model-label" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="edit-model-label">Edit Tag</h3>
+		</div>
+		<div class="modal-body">
+			<form id="save-form" class="form-horizontal" action="." method="POST">
+				<div class="control-group">
+					<label class="control-label" for="name">Name</label>
+					<div class="controls">
+						<input type="text" name="name" id="name" value="{{ tag.name }}" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="name">Type</label>
+					<div class="controls">
+						<label class="radio tag-standard">
+							<input type="radio" name="type" value="standard" {% if tag.type == 'standard' %}checked="checked"{% endif %} />
+							Standard
+						</label>
+						<label class="radio tag-copyright">
+							<input type="radio" name="type" value="copyright" {% if tag.type == 'copyright' %}checked="checked"{% endif %} />
+							Copyright
+						</label>
+						<label class="radio tag-character">
+							<input type="radio" name="type" value="character" {% if tag.type == 'character' %}checked="checked"{% endif %} />
+							Character
+						</label>
+						<label class="radio tag-artist">
+							<input type="radio" name="type" value="artist" {% if tag.type == 'artist' %}checked="checked"{% endif %} />
+							Artist
+						</label>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			<button class="btn btn-primary" id="modal-save-confirm">Save</button>
 		</div>
 	</div>
 	

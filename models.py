@@ -13,7 +13,7 @@ class Post(object):
 	mime = 'text/plain'	#lolnope
 	key = ''
 	
-	base_query = "SELECT ROWID, added, rating, mime, key FROM posts"
+	base_query = "SELECT id, added, rating, mime, key FROM posts"
 	date_format = '%Y-%m-%d %H:%M:%S.%f'
 	
 	def __init__(self, id=-1, added=datetime.now(), rating='q', mime='', key=None):
@@ -47,7 +47,7 @@ class Post(object):
 		if not thumb:
 			self.key = dencrypt(data, self.path(thumb))
 			c = g.db.cursor()
-			c.execute("UPDATE posts SET key = ? WHERE ROWID = ?", (self.key, self.id))
+			c.execute("UPDATE posts SET key = ? WHERE id = ?", (self.key, self.id))
 			g.db.commit()
 			
 			if make_thumb:
@@ -75,7 +75,7 @@ class Post(object):
 				(self.added, self.rating, self.mime))
 			self.id = c.lastrowid
 		else:
-			c.execute("UPDATE posts SET added = ?, rating = ?, mime = ? WHERE ROWID = ?",
+			c.execute("UPDATE posts SET added = ?, rating = ?, mime = ? WHERE id = ?",
 				(self.added, self.rating, self.mime, self.id))
 		g.db.commit()
 	
@@ -83,13 +83,13 @@ class Post(object):
 		zerofill_delete(self.path(thumb=True))
 		zerofill_delete(self.path(thumb=False))
 		c = g.db.cursor()
-		c.execute("DELETE FROM posts WHERE ROWID = ?", (self.id,))
+		c.execute("DELETE FROM posts WHERE id = ?", (self.id,))
 		g.db.commit()
 	
 	@classmethod
 	def get(cls, id):
 		c = g.db.cursor()
-		rec = c.execute(cls.base_query + " WHERE ROWID = ?", [id]).fetchone()
+		rec = c.execute(cls.base_query + " WHERE id = ?", [id]).fetchone()
 		if rec is None:
 			return None
 		return cls(*rec)
@@ -120,7 +120,7 @@ class Tag(object):
 	name = ""
 	type = ""
 	
-	base_query = "SELECT ROWID, name, type FROM tags"
+	base_query = "SELECT id, name, type FROM tags"
 	
 	def __init__(self, id=-1, name='Untitled', type='standard'):
 		self.id = id
@@ -133,9 +133,20 @@ class Tag(object):
 		posts = [ Post.get(rel[0]) for rel in rels ]
 		return posts
 	
+	def get_count(self):
+		c = g.db.cursor()
+		count = c.execute("SELECT COUNT(*) FROM posts_tags WHERE tid = ?", (self.id,)).fetchone()[0]
+		return count
+	
+	def save(self):
+		c = g.db.cursor()
+		c.execute("UPDATE tags SET name = ?, type = ? WHERE id = ?",
+					(self.name, self.type, self.id))
+		g.db.commit()
+	
 	def delete(self):
 		c = g.db.cursor()
-		c.execute("DELETE FROM tags WHERE ROWID = ?", (self.id,))
+		c.execute("DELETE FROM tags WHERE id = ?", (self.id,))
 		g.db.commit()
 	
 	# NOTE: This function does NOT commit!
@@ -154,7 +165,7 @@ class Tag(object):
 	@classmethod
 	def get_by_id(cls, id):
 		c = g.db.cursor()
-		rec = c.execute(cls.base_query + " WHERE ROWID = ?", (id,)).fetchone()
+		rec = c.execute(cls.base_query + " WHERE id = ?", (id,)).fetchone()
 		if rec == None:
 			return None
 		else:

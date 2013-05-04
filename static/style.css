@@ -18,6 +18,14 @@
 	padding:10px 15px;
 }
 
+.table a:first-child:last-child {
+	display:block;
+}
+
+.tag-copyright, .tag-copyright a { color:purple; }
+.tag-character, .tag-character a { color:green; }
+.tag-artist, .tag-artist a { color:#900; }
+
 #login-form {
 	text-align: center;
 }

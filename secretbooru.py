@@ -133,10 +133,16 @@ def thumb(id):
 def tags():
 	return render_template('tags.html', tags=Tag.all())
 
-@app.route('/tags/<int:id>/', methods=['GET', 'DELETE'])
+@app.route('/tags/<int:id>/', methods=['GET', 'POST', 'DELETE'])
 def tag(id):
 	tag=get_tag_by_id_or_404(id)
-	if request.method == 'DELETE':
+	if request.method == 'POST':
+		tag.name = request.form['name']
+		tag.type = request.form['type']
+		tag.save()
+		# Redirect to prevent form resending on reload
+		return redirect(url_for('tag', id=id))
+	elif request.method == 'DELETE':
 		tag.delete()
 		return url_for('tags')
 	return render_template('tag.html', tag=tag)

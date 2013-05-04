@@ -8,7 +8,7 @@ $('#modal-delete-confirm').click(delete_self)
 {% block sidebar %}
 	<li class="nav-header">Tags</li>
 	{% for tag in post.get_tags() %}
-		<li><a href="{{ url_for('tag', id=tag.id)}}">{{ tag.name }}</a></li>
+		<li class="tag-{{ tag.type }}"><a href="{{ url_for('tag', id=tag.id)}}">{{ tag.name }}</a></li>
 	{% endfor %}
 	
 	<li class="nav-header">Actions</li>

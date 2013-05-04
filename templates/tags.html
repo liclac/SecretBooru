@@ -1,9 +1,22 @@
 {% extends "one-column.html" %}
 {% block title %}Tags{% endblock %}
 {% block content %}
-<ul>
+{#<ul>
 	{% for tag in tags %}
 	<li><a href="{{ url_for('tag', id=tag.id) }}">{{ tag.name }}</a></li>
 	{% endfor %}
-</ul>
+</ul>#}
+<table class="table table-striped">
+	<thead>
+		<th width="50">Posts</th>
+		<th>Tag</th>
+	</thead>
+	<tbody>
+		{% for tag in tags %}
+		<tr>
+			<td>{{ tag.get_count() }}</td>
+			<td><a href="{{ url_for('tag', id=tag.id) }}">{{ tag.name }}</a></td>
+		</tr>
+		{% endfor %}
+	</tbody>
 {% endblock %}
