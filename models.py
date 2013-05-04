@@ -41,9 +41,6 @@ class Post(object):
 		tags = [ Tag.get_by_id(rel[0]) for rel in rels ]
 		return tags
 	
-	def get_data(self, thumb=False):
-		return ddecrypt(self.key, self.path(thumb))
-	
 	def set_data(self, data, format, thumb=False, make_thumb=True):
 		if not thumb:
 			self.key = dencrypt(data, self.path(thumb))
@@ -55,6 +52,9 @@ class Post(object):
 				self.make_thumbnail(data, format)
 		else:
 			dencrypt(data, self.path(thumb), self.key)
+	
+	def get_data(self, thumb=False):
+		return ddecrypt(self.key, self.path(thumb))
 	
 	def make_thumbnail(self, data, format):
 		import Image
@@ -105,6 +105,12 @@ class Tag(object):
 		self.name = name
 		self.type = type
 	
+	def get_posts(self):
+		c = g.db.cursor()
+		rels = c.execute("SELECT pid FROM posts_tags WHERE tid = ?", (self.id,)).fetchall()
+		posts = [ Post.get(rel[0]) for rel in rels ]
+		return posts
+	
 	# NOTE: This function does NOT commit!
 	@classmethod
 	def get_or_create(cls, name, type='standard'):
@@ -126,6 +132,14 @@ class Tag(object):
 			return None
 		else:
 			return cls(*rec)
+	
+	@classmethod
+	def all(cls):
+		c = g.db.cursor()
+		l = []
+		for rec in c.execute(cls.base_query + " ORDER BY name ASC").fetchall():
+			l.append(cls(*rec))
+		return l
 	
 	def __str__(self):
 		return "<%s>" % self.name

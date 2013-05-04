@@ -1,0 +1,9 @@
+{% extends "one-column.html" %}
+{% block title %}Tags{% endblock %}
+{% block content %}
+<ul>
+	{% for tag in tags %}
+	<li><a href="{{ url_for('tag', id=tag.id) }}">{{ tag.name }}</a></li>
+	{% endfor %}
+</ul>
+{% endblock %}

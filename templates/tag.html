@@ -1,0 +1,12 @@
+{% extends "two-columns.html" %}
+{% block title %}Posts in Tag{% endblock %}
+{% block sidebar %}
+<li class="nav-header">{{ tag.name }}</li>
+{% endblock %}
+{% block content %}
+{% for post in tag.get_posts() %}
+<a class="thumb" href="{{ url_for('post', id=post.id) }}">
+	<img src="{{ url_for('thumb', id=post.id) }}" />
+</a>
+{% endfor %}
+{% endblock %}

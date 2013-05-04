@@ -1,12 +1,15 @@
 {% extends "two-columns.html" %}
 {% block title %}Viewing Post{% endblock %}
 {% block sidebar %}
-<li class="nav-header">Tags</li>
-{% for tag in post.get_tags() %}
-<li><a href="#">{{ tag.name }}</a></li>
-{% endfor %}
+	<li class="nav-header">Tags</li>
+	{% for tag in post.get_tags() %}
+		<li><a href="{{ url_for('tag', id=tag.id)}}">{{ tag.name }}</a></li>
+	{% endfor %}
+	
+	<li class="nav-header">Actions</li>
+	
 {% endblock %}
 {% block content %}
-<img src="image" />
-<p>&nbsp;</p>
+	<img src="image" />
+	<p>&nbsp;</p>
 {% endblock %}

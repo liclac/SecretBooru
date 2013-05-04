@@ -81,8 +81,7 @@ def logout():
 
 @app.route('/posts/')
 def posts():
-	posts = Post.all()
-	return render_template('posts.html', posts=posts)
+	return render_template('posts.html', posts=Post.all())
 
 @app.route('/posts/<int:id>/')
 def post(id):
@@ -104,6 +103,18 @@ def thumb(id):
 	post = Post.get(id)
 	if post:
 		return (post.get_data(True), 200, [('Content-Type', post.mime)])
+	else:
+		abort(404)
+
+@app.route('/tags/')
+def tags():
+	return render_template('tags.html', tags=Tag.all())
+
+@app.route('/tags/<int:id>/')
+def tag(id):
+	tag = Tag.get_by_id(id)
+	if tag:
+		return render_template('tag.html', tag=tag)
 	else:
 		abort(404)
 
