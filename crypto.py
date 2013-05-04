@@ -7,6 +7,8 @@ def dencrypt(data, outpath, key = None):
 	bs = AES.block_size
 	if key is None:
 		key = Random.new().read(16)
+	else:
+		key = base64.b64decode(key)
 	iv = Random.new().read(bs)
 	encryptor = AES.new(key, AES.MODE_CBC, iv)
 	print "Key: %s" % base64.b64encode(key)
