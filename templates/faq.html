@@ -1,0 +1,19 @@
+{% extends "home.html" %}
+{% block title %}About{% endblock %}
+{% block content %}
+<h2>FAQ</h2>
+
+<h4>Q: I get an error about a missing JPEG decoder when trying to import images!</h4>
+<div class="faq-a">
+	<p>
+		You forgot to install libjpeg before installing PIL. Install <code>libjpeg-dev</code>/<code>libjpeg-devel</code>, then reinstall PIL with <code>pip install -I PIL</code> (the <code>-I</code> flag makes it ignore the installed package and reinstall it).
+	</p>
+	<p>
+		The details on how to install libjpeg varies by platform, but this is a quite common error, and there is plenty of documentation on the internet.
+	</p>
+</div>
+<h4>Q: I forgot my password!! D:</h4>
+<div class="faq-a">
+	<p>Well, crap. You're not getting anything out of SecretBooru without a password.</p>
+</div>
+{% endblock %}

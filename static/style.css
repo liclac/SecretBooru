@@ -26,6 +26,14 @@
 .tag-character, .tag-character a { color:green; }
 .tag-artist, .tag-artist a { color:#900; }
 
+.faq-a {
+	margin-left:25px;
+	margin-bottom:3em;
+}
+.faq-a:last-child {
+	margin-bottom:0;
+}
+
 #login-form {
 	text-align: center;
 }

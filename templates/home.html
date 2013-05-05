@@ -1,5 +1,12 @@
-{% extends "one-column.html" %}
+{% extends "two-columns.html" %}
 {% block title %}Home{% endblock %}
+{% block sidebar %}
+<li class="nav-header">Secret Booru</li>
+<li><a href="{{ url_for('about') }}">About</a></li>
+<li><a href="{{ url_for('usage') }}">Usage</a></li>
+<li><a href="{{ url_for('faq') }}">FAQ/Troubleshooting</a></li>
+{% endblock %}
 {% block content %}
-<p>Lorem ipsum dolor sit amet</p>
+<h2>Welcome to SecretBooru</h2>
+<p>SafeBooru makes sure nobody looks at your pictures without your permission.</p>
 {% endblock %}

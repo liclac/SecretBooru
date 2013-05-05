@@ -1,0 +1,22 @@
+{% extends "home.html" %}
+{% block title %}Usage{% endblock %}
+{% block content %}
+<h2>Usage</h2>
+<p>If you've used any other 'boorus (such as <a href="http://gelbooru.com/">Gelbooru</a> or <a href="http://danbooru.donmai.us/">Danbooru</a>), SecretBooru should feel rather familiar.</p>
+<hr />
+
+<h4>Adding Images</h4>
+<p>An imageboard isn't much fun without any images to fill it. SecretBooru curretly supports importing from URLs (including file:// URLs for local files - file uploading coming soon), and by importing from Gelbooru.</p>
+<hr />
+
+<h4>Tagging Images</h4>
+<p>Organization of 'boorus is done by <em>tagging</em> images. Tags are one or more words with spaces replaced by underscores, such as:</p>
+<ul>
+	<li><strong>1girl</strong> (normal tag)</li>
+	<li><strong>black_hair</strong> (normal tag)</li>
+	<li><strong class="tag-artist">kantoku</strong> (artist)</li>
+	<li><strong class="tag-character">sayaka_miki</strong> (character)</li>
+	<li><strong class="tag-copyright">touhou</strong> (copyright)</li>
+</ul>
+<p>While this particular combination of tags makes no sense (Sayaka doesn't have black hair and she's not from Touhou, for starters), you get the idea. Tagging makes it very easy to categorize and index a large number of images, and find particular images very quickly, by filtering posts by their tags.</p>
+{% endblock %}

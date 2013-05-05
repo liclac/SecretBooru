@@ -1,0 +1,26 @@
+{% extends "home.html" %}
+{% block title %}About{% endblock %}
+{% block content %}
+<h2>About SecretBooru</h2>
+<p>SecretBooru is a 'Booru clone, that uses encryption to protect your pictures from prying eyes.</p>
+<hr />
+
+<h4>SecretBooru:</h4>
+<ul>
+	<li>Encrypts every image you put into it</li>
+	<li>Gives every image a randomly generated encryption key</li>
+	<li>Stores encryption keys in an encrypted database</li>
+	<li>Does not "know" the correct password</li>
+	<li>Invalidates cookies on every launch</li>
+</ul>
+<p>This basically means that nobody can read the stored image files, nobody can read the database (including things like tags).<br />It'll also be very difficult to steal your login, and it'd only work once.</p>
+<p>The web interface is also designed to avoid revealing things - for example, tags are referred to by ID in URLs, rather than by name.</p>
+
+<hr />
+<h4 class="muted">Disclaimer</h4>
+<p class="muted">
+	I have very little experience when it comes to security.<br />
+	SecretBooru will most certainly keep your sister out, but it most certainly won't keep any governments out.<br />
+	Or your sister, if she happens to be a bored security researcher...
+</p>
+{% endblock %}
