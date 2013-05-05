@@ -31,7 +31,7 @@ def db_connect(password):
 	# TODO: Use something better than re.escape for this
 	# For some reason, normal '?' placeholders don't work for PRAGMA's
 	db.execute("PRAGMA key = '%s'" % re.escape(password))
-	db.execute("PRAGMA foreign_keys = ON;")
+	db.execute("PRAGMA foreign_keys = ON")
 	return db
 
 def get_post_or_404(id):
@@ -82,9 +82,9 @@ def login():
 		db = db_connect(request.form['password'])
 		success = True
 		
-		# The database will fail to decrypt if the password
-		# is invalid, and then throw an error if you try
-		# to query it. So... let's query it.
+		# The database will fail to decrypt if the password is invalid,
+		# and then throw an error if you try to query it. So... let's
+		# query it, and see if it throws an error.
 		try:
 			db.execute("SELECT COUNT(*) FROM sqlite_master")
 		except dbapi2.DatabaseError:
@@ -115,19 +115,13 @@ def post(id):
 
 @app.route('/posts/<int:id>/image')
 def image(id):
-	post = Post.get(id)
-	if post:
-		return (post.get_data(), 200, [('Content-Type', post.mime)])
-	else:
-		abort(404)
+	post = get_post_or_404(id)
+	return (post.get_data(), 200, [('Content-Type', post.mime)])
 
 @app.route('/posts/<int:id>/thumb')
 def thumb(id):
-	post = Post.get(id)
-	if post:
-		return (post.get_data(True), 200, [('Content-Type', post.mime)])
-	else:
-		abort(404)
+	post = get_post_or_404(id)
+	return (post.get_data(True), 200, [('Content-Type', post.mime)])
 
 @app.route('/tags/')
 def tags():
