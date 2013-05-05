@@ -26,6 +26,11 @@
 .tag-character, .tag-character a { color:green; }
 .tag-artist, .tag-artist a { color:#900; }
 
+.pagination {
+	display:block;
+	text-align:center;
+}
+
 .faq-a {
 	margin-left:25px;
 	margin-bottom:3em;

@@ -115,7 +115,11 @@ def logout():
 
 @app.route('/posts/')
 def posts():
-	return render_template('posts.html', posts=Post.all())
+	page = int(request.args.get('p', 0))
+	return render_template('posts.html',
+		posts=Post.page(page),
+		page=page, pages=Post.page_count()
+	)
 
 @app.route('/posts/<int:id>/', methods=['GET', 'POST', 'DELETE'])
 def post(id):

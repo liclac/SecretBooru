@@ -1,6 +1,7 @@
-import os
+import os, math
 import urllib2
 from datetime import datetime
+from operator import attrgetter
 from cStringIO import StringIO
 from flask import g
 from crypto import dencrypt, ddecrypt
@@ -13,9 +14,11 @@ class Post(object):
 	mime = 'text/plain'	#lolnope
 	key = ''
 	_tags = []
+	_count = 0
 	
 	base_query = "SELECT id, added, rating, mime, key FROM posts"
 	date_format = '%Y-%m-%d %H:%M:%S.%f'
+	page_length = 20
 	
 	def __init__(self, id=-1, added=None, rating='q', mime='', key=None):
 		self.id = id
@@ -45,6 +48,7 @@ class Post(object):
 			c = g.db.cursor()
 			rels = c.execute("SELECT tid FROM posts_tags WHERE pid = ?", (self.id,)).fetchall()
 			self._tags = [ Tag.get_by_id(rel[0]) for rel in rels ]
+			self._tags.sort(key=attrgetter('name'))
 		return self._tags
 	
 	def get_tags_string(self):
@@ -94,6 +98,13 @@ class Post(object):
 		g.db.commit()
 	
 	@classmethod
+	def count(cls):
+		if not cls._count:
+			c = g.db.cursor()
+			cls._count = int(c.execute("SELECT COUNT(*) FROM posts").fetchone()[0])
+		return cls._count
+	
+	@classmethod
 	def get(cls, id):
 		c = g.db.cursor()
 		rec = c.execute(cls.base_query + " WHERE id = ?", [id]).fetchone()
@@ -108,6 +119,18 @@ class Post(object):
 		for rec in c.execute(cls.base_query + " ORDER BY id DESC").fetchall():
 			l.append(cls(*rec))
 		return l
+	
+	@classmethod
+	def page(cls, n):
+		c = g.db.cursor()
+		l = []
+		for rec in c.execute(cls.base_query + " ORDER BY id DESC LIMIT ?, ?", (cls.page_length*(n-1), cls.page_length)).fetchall():
+			l.append(cls(*rec))
+		return l
+	
+	@classmethod
+	def page_count(cls):
+		return int(math.ceil(cls.count() / cls.page_length)) + 1
 	
 	@classmethod
 	def download(cls, url, tagnames=[], **kwargs):
