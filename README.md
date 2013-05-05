@@ -42,5 +42,14 @@ Installation
 
 Usage
 -----
+The easy way:
+
 * In the installation directory, run `python secretbooru.py`
 * Open `localhost:5000` in your browser
+
+The better way (that doesn't work on Windows):
+
+* Install uWSGI
+* Run `start.command`
+* Open `localhost:9000` in your browser
+* Stop it with `stop.command`
