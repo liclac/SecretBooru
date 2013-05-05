@@ -3,6 +3,8 @@ SecretBooru
 
 SecretBooru is a 'booru clone similar to [Gelbooru](http://gelbooru.com/) and [Danbooru](http://danbooru.donmai.us/), that encrypts stored images and decrypts them on the fly.
 
+It should be cross-platform, but Windows has a tendency to break things.
+
 Security
 --------
 In a few points, SecretBooru:
