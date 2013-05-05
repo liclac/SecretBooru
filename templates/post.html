@@ -58,5 +58,7 @@
 		</div>
 	</div>
 	
-	<img src="image" />
+	<a href="{{ url_for('image', id=post.id) }}" target="_blank">
+		<img src="{{ url_for('image', id=post.id) }}" />
+	</a>
 {% endblock %}

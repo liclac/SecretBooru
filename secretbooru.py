@@ -218,4 +218,4 @@ def import_gelbooru():
 	return render_template('import_gelbooru.html')
 
 if __name__ == '__main__':
-	app.run()
+	app.run(debug=True)
