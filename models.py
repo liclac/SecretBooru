@@ -45,6 +45,9 @@ class Post(object):
 			self._tags = [ Tag.get_by_id(rel[0]) for rel in rels ]
 		return self._tags
 	
+	def get_tags_string(self):
+		return ' '.join([ tag.name for tag in self.get_tags() ])
+	
 	def set_data(self, data, format, thumb=False, make_thumb=True):
 		if not thumb:
 			self.key = dencrypt(data, self.path(thumb))

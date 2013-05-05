@@ -105,10 +105,15 @@ def logout():
 def posts():
 	return render_template('posts.html', posts=Post.all())
 
-@app.route('/posts/<int:id>/', methods=['GET', 'DELETE'])
+@app.route('/posts/<int:id>/', methods=['GET', 'POST', 'DELETE'])
 def post(id):
 	post=get_post_or_404(id)
-	if request.method == 'DELETE':
+	if request.method == 'POST':
+		post.set_tags(request.form['tags'].strip().split(' '))
+		g.db.commit()
+		# Redirect to prevent form resending on reload
+		return redirect(url_for('post', id=id))
+	elif request.method == 'DELETE':
 		post.delete()
 		return url_for('posts')
 	return render_template('post.html', post=post)

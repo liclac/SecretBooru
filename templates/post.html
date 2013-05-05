@@ -1,9 +1,10 @@
 {% extends "two-columns.html" %}
 {% block title %}Viewing Post{% endblock %}
 {% block body_after %}
-<script type="text/javascript">
-$('#modal-delete-confirm').click(delete_self)
-</script>
+	<script type="text/javascript">
+		$('#modal-delete-confirm').click(delete_self)
+		$('#modal-save-confirm').click(function(e) { $('#save-form').submit() })
+	</script>
 {% endblock %}
 {% block sidebar %}
 	<li class="nav-header">Tags</li>
@@ -12,6 +13,7 @@ $('#modal-delete-confirm').click(delete_self)
 	{% endfor %}
 	
 	<li class="nav-header">Actions</li>
+	<li><a href="#edit-modal" role="button" data-toggle="modal">Edit</a></li>
 	<li><a href="#delete-modal" role="button" data-toggle="modal">Delete</a></li>
 {% endblock %}
 {% block content %}
@@ -32,6 +34,27 @@ $('#modal-delete-confirm').click(delete_self)
 		<div class="modal-footer">
 			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 			<button class="btn btn-danger" id="modal-delete-confirm">Delete</button>
+		</div>
+	</div>
+	
+	<div id="edit-modal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="edit-model-label" aria-hidden="true">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+			<h3 id="edit-model-label">Edit Post</h3>
+		</div>
+		<div class="modal-body">
+			<form id="save-form" class="form-horizontal" action="." method="POST">
+				<div class="control-group">
+					<label class="control-label" for="tags">Tags</label>
+					<div class="controls">
+						<textarea name="tags" id="tags" class="input-block-level" rows="10">{{ post.get_tags_string() }}</textarea>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="modal-footer">
+			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+			<button class="btn btn-primary" id="modal-save-confirm">Save</button>
 		</div>
 	</div>
 	
