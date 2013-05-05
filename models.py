@@ -12,6 +12,7 @@ class Post(object):
 	rating = 'q'
 	mime = 'text/plain'	#lolnope
 	key = ''
+	_tags = []
 	
 	base_query = "SELECT id, added, rating, mime, key FROM posts"
 	date_format = '%Y-%m-%d %H:%M:%S.%f'
@@ -38,10 +39,11 @@ class Post(object):
 			c.execute("INSERT INTO posts_tags (pid, tid) VALUES (?, ?)", (self.id, tag.id))
 	
 	def get_tags(self):
-		c = g.db.cursor()
-		rels = c.execute("SELECT tid FROM posts_tags WHERE pid = ?", (self.id,)).fetchall()
-		tags = [ Tag.get_by_id(rel[0]) for rel in rels ]
-		return tags
+		if not self._tags:
+			c = g.db.cursor()
+			rels = c.execute("SELECT tid FROM posts_tags WHERE pid = ?", (self.id,)).fetchall()
+			self._tags = [ Tag.get_by_id(rel[0]) for rel in rels ]
+		return self._tags
 	
 	def set_data(self, data, format, thumb=False, make_thumb=True):
 		if not thumb:
@@ -119,6 +121,8 @@ class Tag(object):
 	id = -1
 	name = ""
 	type = ""
+	_posts = []
+	_count = 0
 	
 	base_query = "SELECT id, name, type FROM tags"
 	
@@ -128,15 +132,17 @@ class Tag(object):
 		self.type = type
 	
 	def get_posts(self):
-		c = g.db.cursor()
-		rels = c.execute("SELECT pid FROM posts_tags WHERE tid = ?", (self.id,)).fetchall()
-		posts = [ Post.get(rel[0]) for rel in rels ]
-		return posts
+		if not self._posts:
+			c = g.db.cursor()
+			rels = c.execute("SELECT pid FROM posts_tags WHERE tid = ?", (self.id,)).fetchall()
+			self._posts = [ Post.get(rel[0]) for rel in rels ]
+		return self._posts
 	
 	def get_count(self):
-		c = g.db.cursor()
-		count = c.execute("SELECT COUNT(*) FROM posts_tags WHERE tid = ?", (self.id,)).fetchone()[0]
-		return count
+		if not self._count:
+			c = g.db.cursor()
+			self._count = c.execute("SELECT COUNT(*) FROM posts_tags WHERE tid = ?", (self.id,)).fetchone()[0]
+		return self._count
 	
 	def save(self):
 		c = g.db.cursor()
