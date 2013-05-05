@@ -1,6 +1,11 @@
 import os, sys, re
+import urllib2
+from flask import g
 from pysqlcipher import dbapi2
 import settings
+from models import Post
+
+from secretbooru import app, db_connect
 
 site_root = os.path.abspath(os.path.dirname(__file__))
 path = lambda filename: os.path.join(site_root, filename)
@@ -32,8 +37,9 @@ def reset(password):
 	createdb(password)
 
 def dbshell(password):
-	db = dbapi2.connect(path(settings.DB_NAME))
-	db.execute("PRAGMA key = '%s'" % re.escape(password))
+	#db = dbapi2.connect(path(settings.DB_NAME))
+	#db.execute("PRAGMA key = '%s'" % re.escape(password))
+	db = db_connect(password)
 	while True:
 		try:
 			cmd = raw_input("> ")
@@ -49,11 +55,48 @@ def dbshell(password):
 		except Exception as e:
 			print "%s: %s" % (e.__class__.__name__, e)
 
+def import_gbfavs(password, userID):
+	import xml.etree.ElementTree as ET
+	
+	favIDs = []
+	offset = 0
+	while True:
+		data = urllib2.urlopen('http://gelbooru.com/index.php?page=favorites&s=view&id=%s&pid=%s' % (userID, offset)).read()
+		
+		matches = re.findall(r'href=\"index\.php\?page=post&amp;s=view&amp;id=(\d+)\"', data)
+		if len(matches) == 0:
+			break
+		favIDs += matches
+		offset = offset + len(matches)
+	print "Found %s Favorites!" % len(favIDs)
+	
+	ctx = app.test_request_context()
+	ctx.push()
+	
+	g.db = db_connect(password)
+	
+	for favID in reversed(favIDs):
+		print "Downloading http://gelbooru.com/index.php?page=post&s=view&id=%s" % favID
+		data = urllib2.urlopen('http://gelbooru.com/index.php?page=dapi&s=post&q=index&id=%s' % favID).read()
+		root = ET.fromstring(data)
+		if len(root) < 1:
+			print "--> Not Found!"
+		
+		d = root[0].attrib
+		
+		post = Post.download(
+			url=d['file_url'],
+			tagnames=d['tags'].strip().split(' '),
+			rating=d['rating']
+		)
+	ctx.pop()
+
 if __name__ == '__main__':
 	handlers = {
 		'createdb': createdb,
 		'reset': reset,
-		'dbshell': dbshell
+		'dbshell': dbshell,
+		'import-gbfavs': import_gbfavs
 	}
 	
 	if len(sys.argv) <= 1 or sys.argv[1] not in handlers:
@@ -72,6 +115,13 @@ if __name__ == '__main__':
 		print "dbshell <password>"
 		print "    Starts a database shell, decrypting the database"
 		print "    with the given password."
+		print " "
+		
+		print "import_gbfavs <password> <userID>"
+		print "    Imports all favorites for the given Gelbooru user."
+		print "    Note that UserID takes an *user ID*, not an username."
+		print "    To find yours, click Account -> My Profile and check"
+		print "    the 'id=' parameter in the URL."
 		print " "
 		
 		exit()

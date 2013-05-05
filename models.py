@@ -17,14 +17,16 @@ class Post(object):
 	base_query = "SELECT id, added, rating, mime, key FROM posts"
 	date_format = '%Y-%m-%d %H:%M:%S.%f'
 	
-	def __init__(self, id=-1, added=datetime.now(), rating='q', mime='', key=None):
+	def __init__(self, id=-1, added=None, rating='q', mime='', key=None):
 		self.id = id
 		self.added = added
 		self.rating = rating
 		self.mime = mime
 		self.key = key
 		
-		if type(self.added) == str:
+		if self.added is None:
+			self.added = datetime.now()
+		elif type(self.added) == str:
 			self.added = datetime.strptime(added, self.date_format)
 	
 	def path(self, thumb=False):
@@ -103,7 +105,7 @@ class Post(object):
 	def all(cls):
 		c = g.db.cursor()
 		l = []
-		for rec in c.execute(cls.base_query).fetchall():
+		for rec in c.execute(cls.base_query + " ORDER BY id DESC").fetchall():
 			l.append(cls(*rec))
 		return l
 	

@@ -3,7 +3,7 @@ from Crypto.Cipher import AES
 from Crypto import Random
 
 def dencrypt(data, outpath, key = None):
-	print "Encrypting to %s" % outpath
+	#print "Encrypting to %s" % outpath
 	bs = AES.block_size
 	if key is None:
 		key = Random.new().read(16)
@@ -11,8 +11,8 @@ def dencrypt(data, outpath, key = None):
 		key = base64.b64decode(key)
 	iv = Random.new().read(bs)
 	encryptor = AES.new(key, AES.MODE_CBC, iv)
-	print "Key: %s" % base64.b64encode(key)
-	print "IV: %s" % base64.b64encode(iv)
+	#print "Key: %s" % base64.b64encode(key)
+	#print "IV: %s" % base64.b64encode(iv)
 
 	fin = io.BytesIO(data)
 	fout = io.BytesIO()
@@ -32,14 +32,14 @@ def dencrypt(data, outpath, key = None):
 	return base64.b64encode(key)
 
 def ddecrypt(key, inpath):
-	print "Decrypting %s" % inpath
-	print "Key: %s" % key
+	#print "Decrypting %s" % inpath
+	#print "Key: %s" % key
 	bs = AES.block_size
 	
 	fout = io.BytesIO()
-	with open(inpath, 'rb') as fin:#, open(out_file, 'wb') as fout:
+	with open(inpath, 'rb') as fin:
 		iv = fin.read(bs)
-		print "IV: %s" % base64.b64encode(iv)
+		#print "IV: %s" % base64.b64encode(iv)
 		decryptor = AES.new(base64.b64decode(key), AES.MODE_CBC, iv)
 		
 		while True:
